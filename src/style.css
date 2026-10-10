@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --color-brand-bg: #070b19;
+  --color-brand-blue: #2563eb;
+  --color-brand-cyan: #06b6d4;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #070b19;
+  color: #fff;
+  overscroll-behavior: none;
+}
+
+html {
+  height: 100vh;
+  height: 100svh;
+}
