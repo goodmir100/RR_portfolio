@@ -48,7 +48,7 @@
               >
                 <span class="text-brand-blue transition-transform group-hover:translate-x-[calc(2*var(--u))]">→</span>
                 <span>{{ project.name }}</span>
-                <span class="text-slate-500 u-small">{{ project.kind === 'figma' ? 'figma' : 'онлайн' }}</span>
+                <span class="text-slate-500 u-small">{{ project.kind === 'figma' ? 'comp-grafics' : 'онлайн' }}</span>
               </a>
             </li>
           </ul>
@@ -154,15 +154,29 @@
             >Материалы на Яндекс Диске</a
           >
           <span class="text-brand-blue" aria-hidden="true">✦</span>
+          <button
+            type="button"
+            class="cert-trigger uppercase hover:text-white transition-colors"
+            :aria-expanded="certOpen ? 'true' : 'false'"
+            aria-haspopup="dialog"
+            @click="certOpen = true"
+            >Сертификаты · {{ certItems.length }}</button
+          >
+          <span class="text-brand-blue" aria-hidden="true">✦</span>
           <span class="uppercase">Алматы · KZ</span>
         </div>
       </section>
     </div>
+
+    <!-- Certificate Gallery Modal (teleported to <body>) -->
+    <CertificateGallery :is-open="certOpen" :items="certItems" @close="certOpen = false" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import CertificateGallery from './CertificateGallery.vue';
+import type { CertificateItem } from '../types';
 
 interface Project {
   name: string;
@@ -182,6 +196,17 @@ const projects: Project[] = [
   },
 ];
 
+const certOpen = ref(false);
+
+const certItems: CertificateItem[] = [
+  { src: '/certificates/cert-01.pdf', type: 'pdf' },
+  { src: '/certificates/cert-02.pdf', type: 'pdf' },
+  { src: '/certificates/cert-03.pdf', type: 'pdf' },
+  { src: '/certificates/cert-04.pdf', type: 'pdf' },
+  { src: '/certificates/cert-05.pdf', type: 'pdf' },
+  { src: '/certificates/cert-06.jpg', type: 'image' },
+  { src: '/certificates/cert-07.jpg', type: 'image' },
+];
 
 /**
  * Inline `--u` uses `svh`. Browsers without svh support drop the invalid
@@ -243,6 +268,25 @@ const stageStyle = computed(() => ({
   bottom: calc(48 * var(--tb));
   left: calc(60 * var(--tb));
   right: calc(60 * var(--tb));
+}
+
+/* <button> does not inherit font or color, so restore both explicitly. */
+.cert-trigger {
+  font-family: inherit;
+  font-size: calc(12 * var(--u));
+  line-height: 1.4;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline-offset: calc(4 * var(--u));
+}
+
+.cert-trigger:hover .cert-title {
+  color: var(--cyan-glow);
+}
+
+.cert-trigger:focus-visible {
+  outline: calc(1.5 * var(--u)) solid var(--cyan-glow);
 }
 
 /* ---------- Spacing utilities in reference pixels ---------- */
