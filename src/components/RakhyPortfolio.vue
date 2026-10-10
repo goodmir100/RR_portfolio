@@ -48,7 +48,7 @@
               >
                 <span class="text-brand-blue transition-transform group-hover:translate-x-[calc(2*var(--u))]">→</span>
                 <span>{{ project.name }}</span>
-                <span class="text-slate-500 u-small">онлайн</span>
+                <span class="text-slate-500 u-small">{{ project.kind === 'figma' ? 'figma' : 'онлайн' }}</span>
               </a>
             </li>
           </ul>
@@ -167,14 +167,21 @@ import { computed } from 'vue';
 interface Project {
   name: string;
   href: string;
+  kind: 'live' | 'figma';
 }
 
 const projects: Project[] = [
-  { name: 'DEVSPACEHUB', href: 'https://devspacehub.vercel.app/' },
-  { name: 'COMBASKET', href: 'https://combasket.vercel.app/' },
-  { name: 'SHISHA DXB', href: 'https://hookahproject.vercel.app/' },
-  { name: 'LEARNING SCHOOL', href: 'https://learningschool-pehuyoavc-m1r1.vercel.app/' },
+  { name: 'DEVSPACEHUB', href: 'https://devspacehub.vercel.app/', kind: 'live' },
+  { name: 'COMBASKET', href: 'https://combasket.vercel.app/', kind: 'live' },
+  { name: 'SHISHA DXB', href: 'https://hookahproject.vercel.app/', kind: 'live' },
+  { name: 'LEARNING SCHOOL', href: 'https://learningschool-pehuyoavc-m1r1.vercel.app/', kind: 'live' },
+  {
+    name: 'PORTFOLIO / MOBILE',
+    href: 'https://www.figma.com/proto/DNmwNk20rI3WDu3jRXynJM/comp-grafics?node-id=10-2&p=f&t=618Zv3aI73B31RlT-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1',
+    kind: 'figma',
+  },
 ];
+
 
 /**
  * Inline `--u` uses `svh`. Browsers without svh support drop the invalid
