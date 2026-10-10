@@ -1,34 +1,34 @@
-# Rakhy Rakhym — Portfolio
+# Рахи Рахым — Портфолио
 
-Single-viewport portfolio landing page. Vue 3 + TypeScript + Tailwind CSS v4 + Vite.
+Одноэкранная визитка-портфолио. Vue 3 + TypeScript + Tailwind CSS v4 + Vite.
 
-## Scripts
+## Скрипты
 
 ```bash
-npm install        # install dependencies
-npm run dev        # dev server at http://localhost:5173
-npm run build      # type-check + production build to ./dist
-npm run preview    # serve ./dist locally
+npm install        # установить зависимости
+npm run dev        # dev-сервер на http://localhost:5173
+npm run build      # проверка типов + продакшн-сборка в ./dist
+npm run preview    # локальный предпросмотр ./dist
 ```
 
-## Deploy
+## Деплой
 
-The project is static. `vercel.json` is included — push to a Git repo and import it in Vercel,
-or run `npx vercel` from this folder. Any static host (Netlify, GitHub Pages, Cloudflare Pages)
-works with `npm run build` and `dist` as the output directory.
+Проект статический. `vercel.json` уже включён — запушьте в Git-репозиторий и импортируйте его в
+Vercel, либо выполните `npx vercel` из этой папки. Любой статический хостинг (Netlify, GitHub Pages,
+Cloudflare Pages) работает с `npm run build` и папкой `dist` в качестве выходной директории.
 
-## Structure
+## Структура
 
 ```
-index.html                     entry HTML, fonts, meta tags
-public/favicon.svg             star-motif favicon
-src/main.ts                    app bootstrap
-src/style.css                  Tailwind v4 entry + theme tokens + global reset
-src/App.vue                    root component
-src/components/RakhyPortfolio.vue   the landing page (scale system in <style>)
+index.html                     входной HTML, шрифты, мета-теги
+public/favicon.svg             фавикон с мотивом звезды
+src/main.ts                    инициализация приложения
+src/style.css                  точка входа Tailwind v4 + токены темы + глобальный сброс
+src/App.vue                    корневой компонент
+src/components/RakhyPortfolio.vue   лендинг (система масштабирования в <style>)
 ```
 
-## Editing content
+## Редактирование контента
 
-All text, links and projects live in `src/components/RakhyPortfolio.vue`.
-Projects are defined in the `projects` array inside `<script setup>`.
+Весь текст, ссылки и проекты находятся в `src/components/RakhyPortfolio.vue`.
+Проекты описаны в массиве `projects` внутри `<script setup>`.

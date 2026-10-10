@@ -23,60 +23,60 @@
         class="header absolute top-0 left-0 right-0 flex items-center justify-between border-b border-slate-800/80"
       >
         <div class="flex items-center u-gap-8">
-          <h1 class="font-sans tracking-tight text-white u-brand">RAKHY RAKHYM</h1>
-          <span class="text-[#2563EB] u-star" aria-hidden="true">✦</span>
+          <h1 class="font-sans tracking-tight text-white u-brand">РАХИ РАХЫМ</h1>
+          <span class="text-brand-blue u-star" aria-hidden="true">✦</span>
         </div>
         <div class="font-mono uppercase tracking-widest text-slate-400 u-label">
-          Web Designer &amp; Frontend Intern
+          Веб-дизайнер и фронтенд-разработчик
         </div>
       </header>
 
       <!-- Main Dynamic Navigation Grid -->
-      <nav class="nav absolute" aria-label="Portfolio navigation">
+      <nav class="nav absolute" aria-label="Навигация портфолио">
         <div class="grid grid-cols-3 u-gap-32">
           <!-- Column 1: Live Web Projects -->
           <ul class="flex flex-col u-stack-8">
-            <li class="font-mono text-[#06B6D4] tracking-widest uppercase u-label u-label-head">
-              Selected Work
+            <li class="font-mono text-brand-cyan tracking-widest uppercase u-label u-label-head">
+              Избранные работы
             </li>
             <li v-for="project in projects" :key="project.href">
               <a
                 :href="project.href"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group flex items-baseline u-gap-8 text-white hover:text-[#2563EB] transition-colors font-sans u-body u-w-250"
+                class="group flex items-baseline u-gap-8 text-white hover:text-brand-blue transition-colors font-sans u-body u-w-250"
               >
-                <span class="text-[#2563EB] transition-transform group-hover:translate-x-[calc(2*var(--u))]">→</span>
+                <span class="text-brand-blue transition-transform group-hover:translate-x-[calc(2*var(--u))]">→</span>
                 <span>{{ project.name }}</span>
-                <span class="text-slate-500 u-small">live</span>
+                <span class="text-slate-500 u-small">онлайн</span>
               </a>
             </li>
           </ul>
 
           <!-- Column 2: Profile & Academic Grounding -->
           <ul class="flex flex-col u-stack-8">
-            <li class="font-mono text-[#06B6D4] tracking-widest uppercase u-label u-label-head">
-              Profile &amp; Education
+            <li class="font-mono text-brand-cyan tracking-widest uppercase u-label u-label-head">
+              Профиль и образование
             </li>
-            <li class="text-slate-400 font-sans u-body u-w-250">IITU College (3rd Year Student)</li>
-            <li class="text-slate-400 font-sans u-body u-w-250">Specialization: Web Designer</li>
+            <li class="text-slate-400 font-sans u-body u-w-250">Колледж IITU, 3-й курс</li>
+            <li class="text-slate-400 font-sans u-body u-w-250">Специализация: веб-дизайн</li>
             <li class="text-slate-400 font-sans u-body u-w-250">
-              <span class="text-slate-200 u-w-500">Vue 3, TypeScript &amp; Tailwind</span> Expert
+              <span class="text-slate-200 u-w-500">Vue 3, TypeScript и Tailwind</span>
             </li>
             <li class="text-slate-400 font-sans u-body u-w-250">
-              <span class="text-[#2563EB]" aria-hidden="true">✦</span> Almaty, Kazakhstan
+              <span class="text-brand-blue" aria-hidden="true">✦</span> Алматы, Казахстан
             </li>
           </ul>
 
           <!-- Column 3: Contact Registry -->
           <ul class="flex flex-col u-stack-8">
             <li class="font-mono text-slate-400 tracking-widest uppercase u-label u-label-head">
-              Channels
+              Контакты
             </li>
             <li>
               <a
                 href="mailto:goodmir100@gmail.com"
-                class="text-slate-300 hover:text-[#2563EB] font-sans transition-colors u-body u-w-250"
+                class="text-slate-300 hover:text-brand-blue font-sans transition-colors u-body u-w-250"
                 >goodmir100@gmail.com</a
               >
             </li>
@@ -85,7 +85,7 @@
                 href="https://wa.me/77073001386"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-slate-300 hover:text-[#2563EB] font-sans transition-colors u-body u-w-250"
+                class="text-slate-300 hover:text-brand-blue font-sans transition-colors u-body u-w-250"
                 >+7 (707) 300-13-86 (WhatsApp)</a
               >
             </li>
@@ -94,7 +94,7 @@
                 href="https://github.com/goodmir100"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-slate-300 hover:text-[#2563EB] font-sans transition-colors u-body u-w-250"
+                class="text-slate-300 hover:text-brand-blue font-sans transition-colors u-body u-w-250"
                 >github.com/goodmir100</a
               >
             </li>
@@ -102,20 +102,20 @@
         </div>
 
         <p class="font-sans text-slate-500 tracking-widest uppercase u-tagline u-w-250">
-          Because structure and code quality matters
+          Потому что структура и качество кода важны
         </p>
 
         <!-- Direct core call to action (Telegram) -->
         <div class="u-cta-wrap">
           <a
-            class="group inline-flex items-center border border-[#2563EB] bg-[#2563EB]/10 hover:bg-[#2563EB]/20 transition-all u-cta"
+            class="group inline-flex items-center border border-brand-blue bg-brand-blue/10 hover:bg-brand-blue/20 transition-all u-cta"
             href="https://t.me/m1r0t"
             target="_blank"
             rel="noopener noreferrer"
           >
             <!-- Direction arrow icon -->
             <svg
-              class="text-[#2563EB] transition-transform group-hover:translate-x-[calc(4*var(--u))] u-cta-icon"
+              class="text-brand-blue transition-transform group-hover:translate-x-[calc(4*var(--u))] u-cta-icon"
               viewBox="0 0 9 9"
               aria-hidden="true"
             >
@@ -123,17 +123,17 @@
               <path d="M5.6 3.6 8.6 6 5.6 8.4Z" fill="currentColor" />
             </svg>
             <span class="font-sans tracking-wide text-white uppercase u-cta-text u-w-290">
-              Connect on Telegram directly
+              Написать в Telegram напрямую
             </span>
           </a>
         </div>
       </nav>
 
       <!-- Bottom Intro & External Footnote Section -->
-      <section class="intro absolute flex flex-col u-stack-16" aria-label="Introduction">
+      <section class="intro absolute flex flex-col u-stack-16" aria-label="Вступление">
         <p class="font-sans text-white leading-none tracking-tighter u-headline u-w-290">
-          Your audience deserves better interfaces<br />
-          and immersive websites.
+          Ваша аудитория заслуживает лучших интерфейсов<br />
+          и вовлекающих сайтов.
         </p>
 
         <!-- Secondary design folder references -->
@@ -143,18 +143,18 @@
             href="https://www.figma.com/design/DNmwNk20rI3WDu3jRXynJM/comp-grafics"
             target="_blank"
             rel="noopener noreferrer"
-            >Figma design system</a
+            >Дизайн-система в Figma</a
           >
-          <span class="text-[#2563EB]" aria-hidden="true">✦</span>
+          <span class="text-brand-blue" aria-hidden="true">✦</span>
           <a
             class="hover:text-white transition-colors"
             href="https://disk.yandex.kz/d/gRUY6S0nVQ_YkQ"
             target="_blank"
             rel="noopener noreferrer"
-            >Yandex Disk assets</a
+            >Материалы на Яндекс Диске</a
           >
-          <span class="text-[#2563EB]" aria-hidden="true">✦</span>
-          <span class="uppercase">Almaty · KZ</span>
+          <span class="text-brand-blue" aria-hidden="true">✦</span>
+          <span class="uppercase">Алматы · KZ</span>
         </div>
       </section>
     </div>
@@ -206,7 +206,7 @@ const stageStyle = computed(() => ({
   height: 100vh;
   height: 100svh;
   background-color: var(--bg-dark);
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
   font-variation-settings: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
