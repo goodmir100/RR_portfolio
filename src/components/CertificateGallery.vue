@@ -24,11 +24,11 @@
           <!-- Header -->
           <div class="cert-head flex items-center justify-between shrink-0">
             <div class="flex items-center u-gap-12">
-              <span class="text-brand-blue u-label" aria-hidden="true">✦</span>
+              <span class="text-neon u-label" aria-hidden="true">✦</span>
               <h2 class="font-sans text-white uppercase tracking-widest u-title u-w-500">
                 Сертификаты
               </h2>
-              <span class="font-mono text-slate-500 u-count" aria-hidden="true">
+              <span class="font-display text-ice u-count" aria-hidden="true">
                 {{ String(active + 1).padStart(2, '0') }} / {{ String(items.length).padStart(2, '0') }}
               </span>
             </div>
@@ -54,19 +54,21 @@
           <div class="cert-body relative flex-1 min-h-0 flex items-center justify-center">
             <img
               v-if="current.type === 'image'"
+              :key="current.src"
               :src="current.src"
               :alt="`Сертификат ${active + 1}`"
-              class="cert-media w-full h-full object-contain"
+              class="cert-media cert-anim w-full h-full object-contain"
             />
             <object
               v-else
+              :key="current.src"
               :data="current.src"
               type="application/pdf"
-              class="cert-media w-full h-full bg-white"
+              class="cert-media cert-anim w-full h-full bg-white"
             >
-              <p class="font-sans text-slate-400 u-hint">
+              <p class="font-sans text-ice u-hint">
                 Браузер не может встроить PDF —
-                <a :href="current.src" target="_blank" rel="noopener noreferrer" class="text-brand-blue"
+                <a :href="current.src" target="_blank" rel="noopener noreferrer" class="text-neon"
                   >откройте сертификат в новой вкладке</a
                 >.
               </p>
@@ -81,7 +83,7 @@
                 :key="item.src"
                 type="button"
                 class="cert-dot transition-colors"
-                :class="i === active ? 'bg-brand-blue' : 'bg-slate-700 hover:bg-slate-500'"
+                :class="i === active ? 'bg-neon' : 'bg-steel hover:bg-cobalt'"
                 :aria-label="`Перейти к сертификату ${i + 1}`"
                 :aria-current="i === active ? 'true' : undefined"
                 @click="active = i"
@@ -93,7 +95,7 @@
                 :href="current.src"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="font-mono uppercase tracking-widest text-slate-400 hover:text-white transition-colors u-label"
+                class="font-sans uppercase tracking-widest text-ice hover:text-white transition-colors u-label"
                 >{{ current.type === 'image' ? 'Открыть изображение' : 'Открыть PDF' }}</a
               >
               <div class="flex items-center u-gap-8">
@@ -130,6 +132,8 @@ import type { CertificateItem } from '../types';
 const props = defineProps<{
   isOpen: boolean;
   items: CertificateItem[];
+  /** Certificate to show when the dialog opens. Defaults to the last viewed one. */
+  initialIndex?: number;
 }>();
 
 const emit = defineEmits<{ close: [] }>();
@@ -201,7 +205,7 @@ watch(
   async (open) => {
     if (open) {
       opener = document.activeElement as HTMLElement | null;
-      active.value = clamp(active.value);
+      active.value = clamp(props.initialIndex ?? active.value);
       await nextTick();
       panel.value?.focus();
       document.addEventListener('keydown', onKeydown);
@@ -233,7 +237,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 }
 
 .cert-backdrop {
-  background-color: rgba(4, 7, 18, 0.88);
+  background-color: rgba(6, 11, 24, 0.9);
   backdrop-filter: blur(calc(6 * var(--u)));
 }
 
@@ -242,8 +246,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
   height: calc(var(--frame-h) * 0.86);
   max-width: 92vw;
   max-height: 92vh;
-  background-color: #0a0f20;
-  border: 1px solid rgba(30, 41, 59, 1);
+  background-color: #0a1128;
+  border: 1px solid rgba(56, 189, 248, 0.25);
   border-radius: calc(6 * var(--u));
   box-shadow: 0 calc(30 * var(--u)) calc(80 * var(--u)) rgba(0, 0, 0, 0.6);
   outline: none;
@@ -251,7 +255,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 
 .cert-head {
   padding: calc(14 * var(--u)) calc(20 * var(--u));
-  border-bottom: 1px solid rgba(30, 41, 59, 1);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.15);
 }
 
 .cert-body {
@@ -268,7 +272,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 }
 
 .cert-body object {
-  border: 1px solid rgba(30, 41, 59, 1);
+  border: 1px solid rgba(56, 189, 248, 0.18);
   border-radius: calc(4 * var(--u));
 }
 
@@ -280,7 +284,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 
 .cert-foot {
   padding: calc(12 * var(--u)) calc(20 * var(--u));
-  border-top: 1px solid rgba(30, 41, 59, 1);
+  border-top: 1px solid rgba(56, 189, 248, 0.15);
 }
 
 /* ---------- Typography ---------- */
@@ -300,14 +304,14 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 .cert-close {
   width: calc(28 * var(--u));
   height: calc(28 * var(--u));
-  border: 1px solid rgba(51, 65, 85, 1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: calc(4 * var(--u));
-  color: rgb(148, 163, 184);
+  color: #94a3b8;
 }
 .cert-close:hover {
   color: #fff;
-  border-color: var(--accent-blue, #2563eb);
-  background-color: rgba(37, 99, 235, 0.15);
+  border-color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.15);
 }
 .u-close-icon {
   width: calc(11 * var(--u));
@@ -317,15 +321,15 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 .cert-nav {
   width: calc(28 * var(--u));
   height: calc(28 * var(--u));
-  border: 1px solid rgba(51, 65, 85, 1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: calc(4 * var(--u));
   font-size: calc(13 * var(--u));
-  color: rgb(203, 213, 225);
+  color: #cbd5e1;
 }
 .cert-nav:hover {
   color: #fff;
-  border-color: #2563eb;
-  background-color: rgba(37, 99, 235, 0.15);
+  border-color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.15);
 }
 
 .cert-dot {
@@ -351,17 +355,50 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 /* ---------- Transitions ---------- */
 .cert-fade-enter-active,
 .cert-fade-leave-active {
-  transition: opacity 180ms ease;
+  transition: opacity 220ms ease;
 }
 .cert-fade-enter-from,
 .cert-fade-leave-to {
   opacity: 0;
 }
 
+/* Panel grows in, certificate fades up on every switch. */
+.cert-panel {
+  animation: cert-panel-in 340ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes cert-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cert-anim {
+  animation: cert-in 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes cert-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cert-fade-enter-active,
   .cert-fade-leave-active {
     transition: none;
+  }
+  .cert-panel,
+  .cert-anim {
+    animation: none;
   }
 }
 </style>

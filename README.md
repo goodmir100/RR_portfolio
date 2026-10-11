@@ -1,4 +1,4 @@
-# Рахи Рахым — Портфолио
+# Рахы Рахым — Портфолио
 
 Одноэкранная визитка-портфолио. Vue 3 + TypeScript + Tailwind CSS v4 + Vite.
 
@@ -25,7 +25,7 @@ public/favicon.svg             фавикон с мотивом звезды
 src/main.ts                    инициализация приложения
 src/style.css                  точка входа Tailwind v4 + токены темы + глобальный сброс
 src/App.vue                    корневой компонент
-src/components/RakhyPortfolio.vue   лендинг (система масштабирования в <style>)
+src/components/RakhyPortfolio.vue   лендинг (bento-сетка, синяя тема, в <style>)
 ```
 
 ## Редактирование контента
