@@ -362,36 +362,74 @@
               </div>
             </div>
 
-            <div class="cert-marquee">
-              <div class="cert-marquee-track">
-                <button
-                  v-for="(item, i) in certLoop"
-                  :key="`${item.src}-${i}`"
-                  type="button"
-                  class="cert-tile group/cert"
-                  :aria-hidden="i >= certItems.length ? 'true' : undefined"
-                  :tabindex="i >= certItems.length ? -1 : undefined"
-                  :aria-label="`Открыть сертификат ${(i % certItems.length) + 1}`"
-                  @click="openCert(i % certItems.length)"
-                >
-                  <img
-                    :src="item.src"
-                    alt=""
-                    class="h-full w-full object-cover object-top transition-transform duration-500 group-hover/cert:scale-105"
-                    loading="lazy"
-                  />
-                  <span
-                    class="pointer-events-none absolute inset-0 bg-linear-to-t from-midnight/85 via-transparent to-midnight/10"
-                    aria-hidden="true"
-                  ></span>
-                  <span
-                    class="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between px-2.5 pb-2 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-white/90"
+            <div class="relative">
+              <button
+                type="button"
+                class="cert-arrow cert-arrow--left"
+                aria-label="Предыдущие сертификаты"
+                @click="certPrev"
+              >
+                ←
+              </button>
+
+              <div
+                ref="certViewport"
+                class="cert-carousel"
+                @mouseenter="certPaused = true"
+                @mouseleave="certPaused = false"
+                @focusin="certPaused = true"
+                @focusout="certPaused = false"
+                @scroll.passive="onCertScroll"
+              >
+                <div class="cert-track">
+                  <button
+                    v-for="(item, i) in certItems"
+                    :key="item.src"
+                    type="button"
+                    class="cert-tile group/cert"
+                    :aria-label="`Открыть сертификат ${i + 1}`"
+                    @click="openCert(i)"
                   >
-                    {{ String((i % certItems.length) + 1).padStart(2, '0') }}
-                    <span class="text-neon" aria-hidden="true">✦</span>
-                  </span>
-                </button>
+                    <img
+                      :src="item.src"
+                      alt=""
+                      class="h-full w-full object-cover object-top transition-transform duration-500 group-hover/cert:scale-105"
+                      loading="lazy"
+                    />
+                    <span
+                      class="pointer-events-none absolute inset-0 bg-linear-to-t from-midnight/85 via-transparent to-midnight/10"
+                      aria-hidden="true"
+                    ></span>
+                    <span
+                      class="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between px-2.5 pb-2 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-white/90"
+                    >
+                      {{ String(i + 1).padStart(2, '0') }}
+                      <span class="text-neon" aria-hidden="true">✦</span>
+                    </span>
+                  </button>
+                </div>
               </div>
+
+              <button
+                type="button"
+                class="cert-arrow cert-arrow--right"
+                aria-label="Следующие сертификаты"
+                @click="certNext"
+              >
+                →
+              </button>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <button
+                v-for="(item, i) in certItems"
+                :key="item.src"
+                type="button"
+                class="cert-dot"
+                :class="{ 'cert-dot--active': i === certPos }"
+                :aria-label="`К сертификату ${i + 1}`"
+                @click="certGo(i)"
+              ></button>
             </div>
           </article>
         </div>
@@ -429,7 +467,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref, type Directive } from 'vue';
+import { onBeforeUnmount, onMounted, ref, type Directive } from 'vue';
 import CertificateGallery from './CertificateGallery.vue';
 import type { CertificateItem } from '../types';
 
@@ -537,7 +575,17 @@ function openCert(index: number) {
   certOpen.value = true;
 }
 
-const certItems: CertificateItem[] = [
+/** Certificates are shown in a shuffled order — Fisher-Yates, once per load. */
+function shuffle<T>(source: readonly T[]): T[] {
+  const a = [...source];
+  for (let i = a.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const certItems: CertificateItem[] = shuffle([
   { src: '/certificates/cert-01.jpg', type: 'image' },
   { src: '/certificates/cert-02.jpg', type: 'image' },
   { src: '/certificates/cert-03.jpg', type: 'image' },
@@ -545,10 +593,61 @@ const certItems: CertificateItem[] = [
   { src: '/certificates/cert-05.png', type: 'image' },
   { src: '/certificates/cert-06.jpg', type: 'image' },
   { src: '/certificates/cert-07.jpg', type: 'image' },
-];
+]);
 
-/** Duplicated list that makes the certificate marquee loop seamlessly. */
-const certLoop: CertificateItem[] = [...certItems, ...certItems];
+/* ---------- Certificate carousel (snap scroll, no duplicates) ---------- */
+
+const certViewport = ref<HTMLElement | null>(null);
+const certPos = ref(0);
+const certPaused = ref(false);
+let certTimer: ReturnType<typeof setInterval> | undefined;
+
+function certGo(index: number, smooth = true) {
+  const vp = certViewport.value;
+  if (!vp) return;
+  const tiles = Array.from(vp.querySelectorAll<HTMLElement>('.cert-tile'));
+  const idx = Math.max(0, Math.min(index, tiles.length - 1));
+  const tile = tiles[idx];
+  if (tile) {
+    const left = vp.scrollLeft + tile.getBoundingClientRect().left - vp.getBoundingClientRect().left;
+    vp.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
+  }
+  certPos.value = idx;
+}
+
+function certNext() {
+  const vp = certViewport.value;
+  if (!vp) return;
+  const atEnd = vp.scrollLeft + vp.clientWidth >= vp.scrollWidth - 12;
+  certGo(atEnd ? 0 : certPos.value + 1);
+}
+
+function certPrev() {
+  certGo(certPos.value - 1);
+}
+
+function onCertScroll() {
+  const vp = certViewport.value;
+  if (!vp) return;
+  let best = 0;
+  let bestDist = Number.POSITIVE_INFINITY;
+  vp.querySelectorAll<HTMLElement>('.cert-tile').forEach((tile, i) => {
+    const dist = Math.abs(vp.scrollLeft + tile.getBoundingClientRect().left - vp.getBoundingClientRect().left);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = i;
+    }
+  });
+  certPos.value = best;
+}
+
+onMounted(() => {
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+  certTimer = setInterval(() => {
+    if (!certPaused.value) certNext();
+  }, 3800);
+});
 
 /* ---------- Scroll reveal (v-reveal="delay in ms") ---------- */
 
@@ -586,6 +685,7 @@ const vReveal: Directive<HTMLElement, number | undefined> = {
 };
 
 onBeforeUnmount(() => {
+  if (certTimer !== undefined) clearInterval(certTimer);
   observer?.disconnect();
   observer = null;
 });
@@ -614,6 +714,12 @@ body {
 ::selection {
   background: #38bdf8;
   color: #020617;
+}
+
+/* ---------- Hero name: solid blue with glow ---------- */
+.hero-script {
+  color: #38bdf8;
+  text-shadow: 0 0 36px rgba(56, 189, 248, 0.55), 0 2px 18px rgba(37, 99, 235, 0.45);
 }
 
 /* ===== Scroll reveal ===== */
@@ -668,6 +774,9 @@ body {
   transform: rotate(-2.4deg) scale(1.06);
   box-shadow: 0 10px 60px -30px rgba(56, 189, 248, 0.8);
 }
+.diag-inner {
+  overflow: hidden;
+}
 .diag-track {
   display: flex;
   width: max-content;
@@ -680,15 +789,20 @@ body {
   display: flex;
   flex-shrink: 0;
   align-items: center;
+  gap: 1.5rem;
+  padding-right: 1.5rem;
 }
-.diag-item {
-  padding-inline: 1.5rem;
+.diag-word {
   font-size: clamp(1.1rem, 2.4vw, 1.7rem);
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #020617;
   white-space: nowrap;
+}
+.diag-word--outline {
+  color: transparent;
+  -webkit-text-stroke: 1.2px #020617;
 }
 .diag-sep {
   font-size: 1.15rem;
@@ -702,27 +816,23 @@ body {
 }
 
 /* ===== Certificate carousel ===== */
-.cert-marquee {
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
-}
 .cert-track {
-  display: flex;
-  width: max-content;
-  gap: 1rem;
-  animation: cert-scroll 48s linear infinite;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.cert-marquee:hover .cert-track {
-  animation-play-state: paused;
+.cert-track::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-@keyframes cert-scroll {
-  to {
-    transform: translateX(-50%);
-  }
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .cert-tile {
   flex-shrink: 0;
+  scroll-snap-align: center;
   width: clamp(160px, 20vw, 220px);
   aspect-ratio: 3 / 4;
   overflow: hidden;
@@ -732,20 +842,66 @@ body {
   cursor: zoom-in;
   transition:
     border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
 }
 .cert-tile:hover {
   border-color: rgba(56, 189, 248, 0.7);
   box-shadow: 0 14px 40px -18px rgba(56, 189, 248, 0.45);
+}
+.cert-tile.is-active {
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 14px 44px -18px rgba(56, 189, 248, 0.5);
+}
+.cert-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(2, 6, 23, 0.85);
+  color: #7dd3fc;
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    background-color 0.3s ease;
+}
+.cert-arrow:hover {
+  border-color: rgba(56, 189, 248, 0.8);
+  background: rgba(14, 165, 233, 0.18);
+  color: #e0f2fe;
+}
+.cert-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  border: 0;
+  background: rgba(125, 211, 252, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+}
+.cert-dot:hover {
+  background: rgba(125, 211, 252, 0.6);
+}
+.cert-dot.is-active {
+  background: #38bdf8;
+  transform: scale(1.35);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .diag-track,
-  .cert-track {
+  .diag-track {
     animation: none;
+  }
+  .cert-track {
+    scroll-behavior: auto;
   }
   .reveal {
     opacity: 1;
