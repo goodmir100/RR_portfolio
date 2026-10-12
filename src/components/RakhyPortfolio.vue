@@ -766,6 +766,10 @@ body {
 /* ===== Diagonal marquee band ===== */
 .diag-band {
   position: relative;
+  /* Keep the rotated band in its own stacking context so it can never paint
+     over the sections that follow it (certificates, contacts) on mobile. */
+  isolation: isolate;
+  z-index: 0;
   overflow: hidden;
   width: 100%;
   margin-block: 0.75rem 4.5rem;
@@ -833,7 +837,7 @@ body {
 .cert-tile {
   flex-shrink: 0;
   scroll-snap-align: center;
-  width: clamp(160px, 20vw, 220px);
+  width: clamp(178px, 46vw, 220px);
   aspect-ratio: 3 / 4;
   overflow: hidden;
   border-radius: 1rem;
@@ -891,6 +895,16 @@ body {
 .cert-dot.is-active {
   background: #38bdf8;
   transform: scale(1.35);
+}
+
+/* ===== Mobile: swipe instead of arrows, tighter band ===== */
+@media (max-width: 639px) {
+  .cert-arrow {
+    display: none;
+  }
+  .diag-band {
+    margin-block: 0.5rem 2.75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
